@@ -1,2 +1,12 @@
 # Summer2019
-Repo for summer projects
+
+Baseball to-do:
+
+  - fit dynamic multinomial
+  
+Power to-do:
+
+  - CITI training
+  - add sampling distributions
+  
+
