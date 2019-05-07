@@ -1,0 +1,373 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{setspace}
+\RequirePackage{amssymb, amsfonts, amsmath, latexsym, verbatim, xspace, setspace}
+\RequirePackage{tikz, pgflibraryplotmarks}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{graphicx}% http://ctan.org/pkg/graphicx
+\usepackage{amsmath,amsthm,amssymb}% http://ctan.org/pkg/amsmath
+\usepackage{kbordermatrix}
+\usepackage{hyperref}
+\usepackage{rotating}
+\usepackage{mdframed}
+\usepackage{mathtools}
+\lstset{
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	frame=single,
+	breaklines=true,
+	postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+
+\newcommand{\bfX}{\mbox{\boldmath $X$}}
+\newcommand{\bfA}{\mbox{\boldmath $A$}}
+\newcommand{\bfB}{\mbox{\boldmath $\beta$}}
+\newcommand{\bfI}{\mbox{\boldmath $I$}}
+\newcommand{\bfC}{\mbox{\boldmath $C$}}
+\newcommand{\bfD}{\mbox{\boldmath $D$}}
+\newcommand{\bfx}{\mbox{\boldmath $x$}}
+\newcommand{\bfY}{\mbox{\boldmath $Y$}}
+\newcommand{\bfe}{\mbox{\boldmath $\epsilon$}}
+\newcommand{\bfO}{\mbox{\boldmath $\Omega$}}
+\newcommand{\bfo}{\mbox{\boldmath $o$}}
+\newcommand{\bft}{\mbox{\boldmath $\theta$}}
+\newcommand{\bfV}{\mbox{\boldmath $V$}}
+\newcommand{\bfR}{\mbox{\boldmath $R$}}
+\newcommand{\bfU}{\mbox{\boldmath $U$}}
+\newcommand{\bfH}{\mbox{\boldmath $H$}}
+\newcommand{\bfg}{\mbox{\boldmath $g$}}
+\newcommand{\bfS}{\mbox{\boldmath $\Sigma$}}
+\newcommand{\bfu}{\mbox{\boldmath $u$}}
+\newcommand{\bfc}{\mbox{\boldmath $c$}}
+\newcommand{\bfmu}{\mbox{\boldmath $\mu$}}
+\newcommand{\bfm}{\mbox{\boldmath $m$}}
+
+
+\newcommand{\bfb}{\mbox{\boldmath $\beta$}}
+
+\newcommand{\bfw}{\mbox{\boldmath $w$}}
+\newcommand{\bfa}{\mbox{\boldmath $\alpha$}}
+\newcommand{\bfW}{\mbox{\boldmath $W$}}
+\newcommand{\bfay}{\mbox{\boldmath $a$}}
+
+\newcommand{\bfv}{\mbox{\boldmath $v$}}
+\newcommand{\bfd}{\mbox{\boldmath $\delta$}}
+
+\newcommand{\bfz}{\mbox{\boldmath $z$}}
+\newcommand{\bfy}{\mbox{\boldmath $y$}}
+
+\title{Dynamic generalized linear model derivations using Polya-gamma data augmentation}
+\date{}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+	
+%\begin{flushleft}
+%	Christian Stratton \\
+%	Dr. Hancock \\
+%	Stat 550 \\
+%	due 29 November 2018
+%\end{flushleft}
+	
+\doublespacing
+	
+\pagenumbering{gobble}
+
+\maketitle
+
+\section{Logistic Regression}
+
+Consider the standard logistic regression model. 
+\[
+\begin{split}
+y_i &\sim \text{binomial}(n_i, \pi_i) \\
+\pi_i &= \frac{\exp(\bfx_i'\bfb)}{1 + \exp(\bfx_i'\bfb)}
+\end{split}
+\]
+
+To sample the joint posterior distribution of $(\bfb)$, we place multivariate normal priors on $\bfb$ and implement the Polya-gamma data augmentation strategy described by \cite{polson2013}.
+
+\newpage
+
+\section{References}
+\begingroup
+\renewcommand{\section}[2]{}%
+\begin{flushleft}
+	\bibliographystyle{plain}
+	\bibliography{biblio}
+\end{flushleft}
+\endgroup
+
+\newpage
+
+\section{Multi-Scale Occupancy Models}  
+
+Consider a study designed to determine the presence/absence of some substance of interest (parasites, \textit{e coli.}, fish DNA, etc.). In such a study, we sample multiple sites; from each site, we collect multiple samples; and finally, from each sample, we run multiple tests for the presence/absence of that substance. However, our detection method is not perfect, nor are we guaranteed to capture the substance in each sample from a site, even if it is present. To account for this uncertainty, consider the following multi-scale occupancy model.   
+
+\subsection{Occurrence at site $i$}  
+
+Let $Z_i$ be a binary valued random variable denoting the presence or absence of the substance at site $i$. That is, 
+\[
+Z_i = \begin{cases}
+1 & \text{if the substance is present at site $i$} \\
+0 & \text{if the substance is not present at site $i$}
+\end{cases}
+\]
+
+If we think of the presence or absence of the substance being related to site specific covariates $\bfx_i$, we can model this as:
+\[
+\begin{split}
+Z_i \sim \text{Bernoulli}\left(\psi_i\right), \hspace{5mm} \psi_i = \frac{\text{exp}(\bfx_i'\bfb)}{1 + \text{exp}(\bfx_i'\bfb)}
+\end{split}
+\]
+
+\subsection{Occurrence in sample $j$ at site $i$}  
+
+Even if the substance is present at site $i$, it may not be present in every sample we collect from that site. Let $A_{ij}$ be a binary valued random variable denoting the presence or absence of the substance in sample $j$ from site $i$. That is,
+\[
+A_{ij} = \begin{cases}
+1 & \text{if the substance is present in sample $j$ at site $i$} \\
+0 & \text{if the substance is not present in sample $j$ at site $i$}
+\end{cases}
+\]
+
+If we think of the presence or absence of the substance being related to sample specific covariates $\bfw_{ij}$, we can model this as:
+\[
+A_{ij}|z_i \sim \text{Bernoulli}\left(z_i\theta_{ij}\right), \hspace{5mm} \theta_{ij} = \frac{\text{exp}(\bfw_{ij}'\bfa)}{1 + \text{exp}(\bfw_{ij}'\bfa)}
+\]
+
+\subsection{Detection in replicate $k$ from sample $j$ at site $i$}
+
+Even if the substance is present in sample $j$, we may not detect it in every replicate we take from that sample. Let $Y_{ijk}$ be a binary valued random variable denoting the detection of the substance in replicate $k$ from sample $j$ at site $i$. That is, 
+\[
+Y_{ijk} = \begin{cases}
+1 & \text{if the substance is detected in replicate $k$ from sample $j$ at site $i$} \\
+0 & \text{if the substance is not detected in replicate $k$ from sample $j$ at site $i$}
+\end{cases}
+\]
+
+It is typically reasonable to assume that the probability of detection is constant across the replicates within a sample, and that the replicates themselves are independent of one another (assuming adequate mixing of the sample before replicates are taken). If we think of this probability of detection as being related to sample specific covariates $\bfv_{ij}$ and letting $k_{ij}$ denote the number of replicates taken from sample $j$ at site $i$, we can model this as:
+\[
+Y_{ij}|a_{ij} \sim \text{Binomial}\left(k_{ij}, a_{ij}p_{ij}\right), \hspace{5mm} p_{ij} = \frac{\text{exp}(\bfv_{ij}'\bfd)}{1 + \text{exp}(\bfv_{ij}'\bfd)}
+\]
+
+\section{MCMC Procedures}
+
+The joint posterior distribution is the following:
+\[
+p(\bfb, \bfa, \bfd, \bfz, \boldsymbol{A} | \bfy) \propto p(\bfb, \bfa, \bfd) \times \prod_{i=1}^M \psi^{z_i}(1-\psi)^{1-z_i} \prod_{i=1}^M\prod_{j=1}^{J_i} (z_i\theta_{ij})^{a_{ij}}(1-z_i\theta_{ij})^{1-a_{ij}}\binom{k_{ij}}{y_{ij}}(a_{ij}p_{ij})^{y_{ij}}(1-a_{ij}p_{ij})^{k_{ij} - y_{ij}}
+\]
+
+To implement MCMC procedures, we need the full conditional distributions. We derive them below. 
+
+\subsection{Latent variables}
+
+Each of these are from Dorazio and Erickson (2017). 
+
+\subsubsection{Full conditional of $Z$}
+\[
+Z_i|\cdot \sim \begin{cases}
+\text{Bernoulli}(1) & \text{if }\sum_{j=1}^{J_i}a_{ij} > 0 \\
+\text{Bernoulli}\left(\frac{\psi_i\prod_{j=1}^{J_i}(1-\theta_{ij})}{\psi_i\prod_{j=1}^{J_i}(1-\theta_{ij})+1-\psi_i}\right) & \text{if }\sum_{j=1}^{J_i}a_{ij} = 0 \\
+\end{cases}
+\]
+
+\subsubsection{Full conditional of $A$}
+\[
+A_{ij}|\cdot \sim \begin{cases}
+\text{Bernoulli}(1) & \text{if }y_{ij}>0 \\
+\text{Bernoulli}\left(\frac{z_i\theta_{ij}(1-p_{ij})^{k_{ij}}}{z_i\theta_{ij}(1-p_{ij})^{k_{ij}} + 1 -z_i\theta_{ij}} \right) & \text{if }y_{ij} = 0
+\end{cases}
+\]
+
+\pagebreak
+
+\subsection{Regression coefficients}
+
+To efficiently sample the regression coefficients, we implement a data augmentation strategy based on Polya-gamma random variables. 
+
+\subsubsection{Full conditional of $\bfb$ and $\boldsymbol{\psi}$}  
+
+\textbf{Constant $\psi$}
+
+The full conditional distribution of $\bfb$ is
+
+\[
+\bfb | \cdot \propto p(\bfb) \prod_{i=1}^{M} \psi_i^{z_i}(1-\psi_i)^{1-z_i} 
+\]
+
+where $\psi_i = \frac{\text{exp}(\bfx_i'\bfb)}{1 + \text{exp}(\bfx_i'\bfb)}$. If we assume that $\psi_i$ is constant across sites ($\psi_i = \psi$), we can efficiently sample $\psi$ from a beta distribution by placing a semi-conjugate beta prior on it. Let $\psi \sim \text{beta}(a, b)$. Then, 
+\[
+\begin{split}
+\psi|\cdot &\propto \psi^{a-1}(1-\psi)^{b-1} \prod_{i=1}^{M} \psi^{z_i}(1-\psi)^{1-z_i} \\
+&\propto \psi^{a-1}(1-\psi)^{b-1} \psi^{\sum_{i=1}^M z_i}(1-\psi)^{M- \sum_{i=1}^M z_i} \\
+&\propto \psi^{a-1+\sum_{i=1}^M z_i} (1 - \psi)^{b-1+M-\sum_{i=1}^M z_i}
+\end{split}
+\]
+
+We recognize this as the kernel of a $\text{beta}\left(a+\sum_{i=1}^M z_i, b+M-\sum_{i=1}^M z_i\right)$ distribution. Therefore, 
+\[
+\psi|\cdot \sim \text{beta}\left(a+\sum_{i=1}^M z_i, b+M-\sum_{i=1}^M z_i\right)
+\]
+
+Choosing $a=b=1$ places a uniform prior distribution on $\psi$. 
+
+\textbf{Non-constant $\psi$}
+
+Consider the likelihood contribution of $z_i$, denoted $L_i(\bfb | z_i)$. Also, let $\eta_i = \bfx_i'\bfb$. From theorem 1 of Polson et al. (2012), we have
+\[
+\begin{split}
+L_i(\bfb | z_i) &\propto \psi_i^{z_i}(1-\psi_i)^{1-z_i} = \left(\frac{\text{exp}(\eta_i)}{1+\text{exp}(\eta_i)}\right) ^{z_i} \left(1 - \frac{\text{exp}(\eta_i)}{1+\text{exp}(\eta_i)}\right) ^{1 - z_i} \\
+&\propto \frac{(\text{exp}(\eta_i))^{z_i}}{(1+\text{exp}(\eta_i))^1} \\
+&\propto e^{(z_i - \frac{1}{2})\eta_i} \int e^{-\omega_i \eta_i^2 / 2} p(\omega_i) d\omega_i
+\end{split}
+\]
+where $\omega_i$ is a Polya-gamma random variable. Therefore, conditional on $\omega$, and letting $\kappa_i = z_i - \frac{1}{2}$, we have
+\[
+\begin{split}
+L_i(\bfb | z_i, \omega_i) &\propto e^{\kappa_i\eta_i-\frac{\omega_i}{2}\eta_i^2} \\
+&\propto e^{-\frac{\omega_i}{2}(\eta_i^2 - \frac{2\kappa_i}{\omega_i}\eta_i)} \\
+&\propto e^{-\frac{\omega_i}{2}(\frac{\kappa_i}{\omega_i} - \eta_i)^2}
+\end{split}
+\]
+
+Therefore, letting $z^*_i = \frac{\kappa_i}{\omega_i} = \frac{1}{\omega_i}(z_i - \frac{1}{2})$, we see that $z^*_i \sim \text{N}(\eta_i, \frac{1}{\omega_i})$. And now, letting $\bfz^*$ denote the stacked vector of $z^*_i$'s and $\Omega = \text{diag}(\omega_i)$, we have that
+\[
+\bfz^* \sim \mathcal{N}(\bfX\bfb, \Omega^{-1})
+\]
+
+Consequently, we express the full conditional of $\bfb$ as
+\[
+\begin{split}
+p(\bfb|\cdot) &\propto p(\bfb)\prod_{i=1}^{M} \psi_i^{z_i}(1-\psi_i)^{1-z_i} \\
+&\propto p(\bfb) \text{exp}\left\{-\frac{1}{2}(\bfz^* - \bfX\bfb)'\Omega(\bfz^* - \bfX\bfb)\right\}
+\end{split}
+\]
+
+Therefore, placing a $\text{MVN}(\mu_0, \Sigma_0)$ prior on the regression coefficients, we get
+\[
+\begin{split}
+p(\bfb|\cdot) &\propto \text{exp}\left\{-\frac{1}{2}(\bfb - \mu_0)' \Sigma_0^{-1} (\bfb - \mu_0) \right\} \text{exp}\left\{-\frac{1}{2}(\bfz^* - \bfX\bfb)'\Omega(\bfz^* - \bfX\bfb)\right\} \\
+&\propto \text{exp}\left\{-\frac{1}{2}(\bfb'\Sigma_0^{-1}\bfb - 2\bfb'\Sigma_0^{-1}\mu_0) + -\frac{1}{2}(\bfb\bfX'\Omega\bfX\bfb - 2\bfb'\bfX\Omega \bfz^*) \right\} \\
+&\propto \text{exp}\left\{-\frac{1}{2} \left(\bfb'(\bfX'\Omega\bfX + \Sigma_0^{-1})\bfb - 2\bfb'(\bfX'\Omega\bfz^* + \Sigma_0^{-1}\mu_0) \right)  \right\}
+\end{split}
+\]
+
+Putting this all together, we get $\bfb | \cdot \sim \mathcal{N}\left(m, V^{-1} \right)$ where 
+\[
+\begin{split}
+m &= V^{-1}(\bfX'\Omega\bfz^* + \Sigma_0^{-1}\mu_0)\\
+V^{-1} &= (\bfX'\Omega\bfX + \Sigma_0^{-1})^{-1}
+\end{split}
+\]
+
+\subsubsection{Full conditional of $\bfa$ and $\theta$}
+
+\textbf{Constant $\theta$ across sites}
+
+The full conditional distribution of $\bfa$ is
+
+\[
+\bfa|\cdot \propto p(\bfa)\prod_{i=1,z_i=1}^{M}\prod_{j=1}^{J_i} (z_i\theta_{ij})^{a_{ij}} (1 - z_i\theta_{ij})^{1-a_{ij}}
+\]
+
+
+where $\theta_{ij} = \frac{\text{exp}(\bfw_{ij}'\bfa)}{1 + \text{exp}(\bfw_{ij}'\bfa)}$. If we assume that $\theta_{ij}$ is constant across sites ($\theta_{ij} = \theta_i$), we can efficiently sample $\theta_i$ from a beta distribution by placing a semi-conjugate beta prior on it. Let $\theta_i \sim \text{beta}(c, d)$. Then, 
+\[
+\begin{split}
+\theta_i|z_i =1, \cdot &\propto \theta_i^{c-1}(1-\theta_i)^{d-1} \prod_{j=1}^{J_i} \theta_i^{a_{ij}} (1 - \theta_i)^{1-a_{ij}} \\
+&\propto \theta_i^{c-1}(1-\theta_i)^{d-1} \theta_i^{\sum_{j=1}^{J_i}a_{ij}} (1 - \theta_i)^{J_i-\sum_{j=1}^{J_i}a_{ij}} \\
+&\propto \theta_i^{c-1}(1-\theta_i)^{d-1} \theta_i^{\sum_{j=1}^{J_i}a_{ij}} (1 - \theta_i)^{J_i-\sum_{j=1}^{J_i}a_{ij}} \\
+&\propto \theta_i^{c-1+\sum_{j=1}^{J_i}a_{ij}} (1 - \theta_i)^{d-1+J_i-\sum_{j=1}^{J_i}a_{ij}}
+\end{split}
+\]
+To account for the dependence on $z_i=1$, we rewrite this as:
+\[
+\propto \theta_i^{c-1+z_i\sum_{j=1}^{J_i}a_{ij}} (1 - \theta_i)^{d-1+z_i(J_i-\sum_{j=1}^{J_i}a_{ij})}
+\]
+
+We recognize this as the kernel of a $\text{beta}\left(c + z_i\sum_{j=1}^{J_i}a_{ij}, d + z_i(J_i - \sum_{j=1}^{J_i}a_{ij})\right)$ distribution. Therefore, 
+\[
+\theta_i|\cdot \sim \text{beta}\left(c + z_i\sum_{j=1}^{J_i}a_{ij}, d + z_i(J_i - \sum_{j=1}^{J_i}a_{ij})\right)
+\]
+
+Choosing $c=d=1$ places a uniform prior distribution on $\theta_i$. Note that this prior also implies a uniform posterior distribution over (0,1) when $z_i = 0$.  
+
+\textbf{Non-constant $\theta_{ij}$}
+
+Consider the likelihood contribution of $a_{ij}$, denoted $L_i(\bfa | a_{ij}, z_i = 1)$ (we condition on $z_i = 1$, because if $z_i = 0$, then $a_{ij} = 0 \ \forall \ j$). Also, let $\nu_{ij} = \bfw_{ij}'\bfa$. From theorem 1 of Polson et al. (2012), we have
+\[
+\begin{split}
+L_i(\bfa | a_{ij}, z_i = 1) &\propto (\theta_{ij})^{a_{ij}} (1 - \theta_{ij})^{1-a_{ij}} = \left(\frac{\text{exp}(\nu_{ij})}{1+\text{exp}(\nu_{ij})}\right) ^{a_{ij}} \left(1 - \frac{\text{exp}(\nu_{ij})}{1+\text{exp}(\nu_{ij})}\right) ^{1 - a_{ij}} \\
+&\propto \frac{(\text{exp}(\nu_{ij}))^{a_{ij}}}{(1+\text{exp}(\nu_{ij}))^1} \\
+&\propto e^{(a_{ij} - \frac{1}{2})\nu_{ij}} \int e^{-\omega_{ij} \nu_{ij}^2 / 2} p(\omega_{ij}) d\omega_{ij}
+\end{split}
+\]
+where $\omega_{ij}$ is a Polya-gamma random variable. Therefore, conditional on $\omega_{ij}$, and letting $\kappa_{ij} = a_{ij} - \frac{1}{2}$, we have
+\[
+\begin{split}
+L_i(\bfb | a_{ij}, \omega_{ij}, z_i = 1) &\propto e^{\kappa_{ij}\nu_{ij}-\frac{\omega_{ij}}{2}\nu_{ij}^2} \\
+&\propto e^{-\frac{\omega_{ij}}{2}(\nu_{ij}^2 - \frac{2\kappa_{ij}}{\omega_{ij}}\nu_{ij})} \\
+&\propto e^{-\frac{\omega_{ij}}{2}(\frac{\kappa_{ij}}{\omega_{ij}} - \nu_{ij})^2}
+\end{split}
+\]
+
+Therefore, letting $a^*_{ij} = \frac{\kappa_{ij}}{\omega_{ij}} = \frac{1}{\omega_{ij}}(a_{ij} - \frac{1}{2})$, we see that $a^*_{ij} \sim \text{N}(\nu_{ij}, \frac{1}{\omega_{ij}})$. And now, letting $\bfay^*$ denote the stacked vector of $a^*_{ij}$'s and $\Omega = \text{diag}(\omega_{ij})$, we have that
+\[
+\bfay^* \sim \mathcal{N}(\bfW \bfa, \Omega^{-1})
+\]
+
+Recall that we are still conditioning on $z_i = 1$. Therefore, let $\bfW_{red}$, $\bfay^*_{red}$, and $\Omega_{red}^{-1}$ denote the reduced design matrix, reduced vector of latent $a_{ij}$'s, and reduced matrix of $\omega_{ij}$'s including only the samples for which $z_i = 1$. We express the full conditional of $\bfa$ as
+\[
+\begin{split}
+p(\bfa|\cdot) &\propto p(\bfa) \prod_{i=1,z_i=1}^{M}\prod_{j=1}^{J_i} (z_i\theta_{ij})^{a_{ij}} (1 - z_i\theta_{ij})^{1-a_{ij}} \\
+&\propto p(\bfa) \text{exp}\left\{-\frac{1}{2}(\bfay^*_{red} - \bfW_{red}\bfa)'\Omega(\bfay^*_{red} - \bfW_{red}\bfa)\right\}
+\end{split}
+\]
+
+Therefore, placing a $\text{MVN}(\mu_0, \Sigma_0)$ prior on the regression coefficients, we get
+\[
+\begin{split}
+p(\bfb|\cdot) &\propto \text{exp}\left\{-\frac{1}{2}(\bfa - \mu_0)' \Sigma_0^{-1} (\bfa - \mu_0) \right\}  \text{exp}\left\{-\frac{1}{2}(\bfay^*_{red} - \bfW_{red}\bfa)'\Omega(\bfay^*_{red} - \bfW_{red}\bfa)\right\} \\
+&\propto \text{exp}\left\{-\frac{1}{2}(\bfa'\Sigma_0^{-1}\bfa - 2\bfa'\Sigma_0^{-1}\mu_0) + -\frac{1}{2}(\bfa\bfW_{red}'\Omega_{red}\bfW_{red}\bfa - 2\bfa'\bfW_{red}\Omega_{red} \bfay_{red}^*) \right\} \\
+&\propto \text{exp}\left\{-\frac{1}{2} \left(\bfa'(\bfW_{red}'\Omega_{red}\bfW_{red} + \Sigma_0^{-1})\bfa - 2\bfa'(\bfW_{red}'\Omega_{red}\bfay_{red}^* + \Sigma_0^{-1}\mu_0) \right)  \right\}
+\end{split}
+\]
+
+Putting this all together, we get $\bfa | \cdot \sim \mathcal{N}\left(m, V^{-1} \right)$ where 
+\[
+\begin{split}
+m &= V^{-1}(\bfW_{red}'\Omega_{red}\bfay_{red}^* + \Sigma_0^{-1}\mu_0)\\
+V^{-1} &= (\bfW_{red}'\Omega_{red}\bfW_{red} + \Sigma_0^{-1})^{-1}
+\end{split}
+\]
+
+\subsubsection{Full conditional of $\bfd$ and $p$} 
+
+\textbf{Constant $p$}
+
+The full conditional distribution of $\bfd$ is
+
+\[
+\bfd|\cdot \propto p(\bfd) \prod_{i=1}^M\prod_{j=1,a_{ij}=1}^{J_i}p_{ij}^{y_{ij}}(1-p_{ij})^{k_{ij}-y_{ij}}
+\]
+where $p_{ij} = \frac{exp(\bfv_{ij}'\bfd)}{1 + exp(\bfv_{ij}'\bfd)}$. If we assume that $p$ is constant across sites and samples ($p_{ij} = p$), we can efficiently sample $p$ from a beta distribution by placing a semi-conjugate $\text{beta}(e, f)$ prior on it. From Dorazio and Erickson (2017), we get the following full conditional distribution.
+
+\[
+p|\cdot \sim \text{beta}\left(e + \sum_{i=1}^M \sum_{j=1}^{J_i}a_{ij}y_{ij}, f + \sum_{i=1}^M \sum_{j=1}^{J_i}a_{ij}(k_{ij} - y_{ij}) \right)
+\]
+
+Choosing $e=f=1$ places a uniform prior on $p$. Furthermore, this implies a uniform posterior for the samples where $a_{ij} = 0$. 
+
+\textbf{Non-constant $p$}
+
+
+
+
+\end{document}

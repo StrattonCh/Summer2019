@@ -1,0 +1,14 @@
+\BOOKMARK [1][-]{section.1}{Logistic Regression}{}% 1
+\BOOKMARK [1][-]{section.2}{References}{}% 2
+\BOOKMARK [1][-]{section.3}{Multi-Scale Occupancy Models}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Occurrence at site i}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Occurrence in sample j at site i}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Detection in replicate k from sample j at site i}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{MCMC Procedures}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Latent variables}{section.4}% 8
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Full conditional of Z}{subsection.4.1}% 9
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Full conditional of A}{subsection.4.1}% 10
+\BOOKMARK [2][-]{subsection.4.2}{Regression coefficients}{section.4}% 11
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Full conditional of \040and bold0mu mumu units}{subsection.4.2}% 12
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Full conditional of \040and }{subsection.4.2}% 13
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Full conditional of \040and p}{subsection.4.2}% 14
